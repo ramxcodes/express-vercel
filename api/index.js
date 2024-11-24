@@ -69,6 +69,8 @@ cron.schedule("0 * * * *", () => {
   }
 });
 
+app.get("/", (req, res) => res.send("Express on Vercel"));
+
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
@@ -90,3 +92,6 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();
 });
+
+
+module.exports = app;
