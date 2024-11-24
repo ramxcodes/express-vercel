@@ -1,7 +1,7 @@
-import { User } from "../models/user.model.js";
-import { Message } from "../models/message.model.js";
+const { User } = require("../models/user.model.js");
+const { Message } = require("../models/message.model.js");
 
-export const getAllUsers = async (req, res, next) => {
+const getAllUsers = async (req, res, next) => {
   try {
     const currentUserId = req.auth.userId;
     const users = await User.find({ clerkId: { $ne: currentUserId } });
@@ -11,7 +11,7 @@ export const getAllUsers = async (req, res, next) => {
   }
 };
 
-export const getMessages = async (req, res, next) => {
+const getMessages = async (req, res, next) => {
   try {
     const myId = req.auth.userId;
     const { userId } = req.params;
@@ -27,4 +27,9 @@ export const getMessages = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  getAllUsers,
+  getMessages,
 };

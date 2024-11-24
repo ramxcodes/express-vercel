@@ -1,6 +1,6 @@
-import { Album } from "../models/album.model.js";
+const { Album } = require("../models/album.model.js");
 
-export const getAllAlbums = async (req, res, next) => {
+const getAllAlbums = async (req, res, next) => {
   try {
     const albums = await Album.find();
     res.status(200).json(albums);
@@ -9,7 +9,7 @@ export const getAllAlbums = async (req, res, next) => {
   }
 };
 
-export const getAlbumById = async (req, res, next) => {
+const getAlbumById = async (req, res, next) => {
   try {
     const { albumId } = req.params;
 
@@ -24,4 +24,9 @@ export const getAlbumById = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  getAllAlbums,
+  getAlbumById,
 };

@@ -1,6 +1,6 @@
-import { Song } from "../models/song.model.js";
+const { Song } = require("../models/song.model.js");
 
-export const getAllSongs = async (req, res, next) => {
+const getAllSongs = async (req, res, next) => {
   try {
     // -1 is for descending order => Newest -> older
     const songs = await Song.find().sort({ createdAt: -1 });
@@ -10,9 +10,9 @@ export const getAllSongs = async (req, res, next) => {
   }
 };
 
-export const getFeaturedSongs = async (req, res, next) => {
+const getFeaturedSongs = async (req, res, next) => {
   try {
-    // fetch 6 random songs
+    // Fetch 6 random songs
     const songs = await Song.aggregate([
       {
         $sample: { size: 6 },
@@ -34,9 +34,9 @@ export const getFeaturedSongs = async (req, res, next) => {
   }
 };
 
-export const getMadeForYouSongs = async (req, res, next) => {
+const getMadeForYouSongs = async (req, res, next) => {
   try {
-    // fetch 4 random songs
+    // Fetch 4 random songs
     const songs = await Song.aggregate([
       {
         $sample: { size: 4 },
@@ -58,9 +58,9 @@ export const getMadeForYouSongs = async (req, res, next) => {
   }
 };
 
-export const getTrendingSongs = async (req, res, next) => {
+const getTrendingSongs = async (req, res, next) => {
   try {
-    // fetch 4 random songs
+    // Fetch 4 random songs
     const songs = await Song.aggregate([
       {
         $sample: { size: 4 },
@@ -82,7 +82,7 @@ export const getTrendingSongs = async (req, res, next) => {
   }
 };
 
-export const searchSongsByNameOrArtist = async (req, res, next) => {
+const searchSongsByNameOrArtist = async (req, res, next) => {
   try {
     const { name } = req.query;
 
@@ -96,4 +96,12 @@ export const searchSongsByNameOrArtist = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  getAllSongs,
+  getFeaturedSongs,
+  getMadeForYouSongs,
+  getTrendingSongs,
+  searchSongsByNameOrArtist,
 };

@@ -1,7 +1,7 @@
-import { Server } from "socket.io";
-import { Message } from "../models/message.model.js";
+const { Server } = require("socket.io");
+const { Message } = require("../models/message.model.js");
 
-export const initializeSocket = (server) => {
+const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: "http://localhost:3000",
@@ -10,14 +10,14 @@ export const initializeSocket = (server) => {
   });
 
   const userSockets = new Map(); // { userId: socketId}
-  const userActivities = new Map(); // {userId: activity}
+  const userActivities = new Map(); // { userId: activity }
 
   io.on("connection", (socket) => {
     socket.on("user_connected", (userId) => {
       userSockets.set(userId, socket.id);
       userActivities.set(userId, "Idle");
 
-      // broadcast to all connected sockets that this user just logged in
+      // Broadcast to all connected sockets that this user just logged in
       io.emit("user_connected", userId);
 
       socket.emit("users_online", Array.from(userSockets.keys()));
@@ -26,7 +26,7 @@ export const initializeSocket = (server) => {
     });
 
     socket.on("update_activity", ({ userId, activity }) => {
-      console.log("activity updated", userId, activity);
+      console.log("Activity updated", userId, activity);
       userActivities.set(userId, activity);
       io.emit("activity_updated", { userId, activity });
     });
@@ -41,7 +41,7 @@ export const initializeSocket = (server) => {
           content,
         });
 
-        // send to receiver in realtime, if they're online
+        // Send to receiver in real-time if they're online
         const receiverSocketId = userSockets.get(receiverId);
         if (receiverSocketId) {
           io.to(receiverSocketId).emit("receive_message", message);
@@ -57,7 +57,7 @@ export const initializeSocket = (server) => {
     socket.on("disconnect", () => {
       let disconnectedUserId;
       for (const [userId, socketId] of userSockets.entries()) {
-        // find disconnected user
+        // Find disconnected user
         if (socketId === socket.id) {
           disconnectedUserId = userId;
           userSockets.delete(userId);
@@ -71,3 +71,5 @@ export const initializeSocket = (server) => {
     });
   });
 };
+
+module.exports = { initializeSocket };

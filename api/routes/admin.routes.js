@@ -1,17 +1,17 @@
-import { Router } from "express";
-import { protectRoutes, requireAdmin } from "../middleware/auth.middleware.js";
-import {
+const { Router } = require("express");
+const { protectRoutes, requireAdmin } = require("../middleware/auth.middleware.js");
+const {
   checkAdmin,
   createAlbum,
   createSong,
   deleteAlbum,
   deleteSong,
-} from "../controller/admin.controller.js";
+} = require("../controller/admin.controller.js");
 
 const router = Router();
 
 // Admin Middleware for all routes
-router.use(protectRoutes, requireAdmin)
+router.use(protectRoutes, requireAdmin);
 
 // Check Admin
 router.get("/check", checkAdmin);
@@ -24,4 +24,4 @@ router.delete("/songs/:id", deleteSong);
 router.post("/albums", createAlbum);
 router.delete("/albums/:id", deleteAlbum);
 
-export default router;
+module.exports = router;

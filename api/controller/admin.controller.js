@@ -1,8 +1,8 @@
-import { Song } from "../models/song.model.js";
-import { Album } from "../models/album.model.js";
-import cloudinary from "../lib/cloudinary.js";
+const Song = require("../models/song.model.js").Song;
+const Album = require("../models/album.model.js").Album;
+const cloudinary = require("../lib/cloudinary.js");
 
-// helper function for cloudinary uploads
+// Helper function for cloudinary uploads
 const uploadToCloudinary = async (file) => {
   try {
     const result = await cloudinary.uploader.upload(file.tempFilePath, {
@@ -15,7 +15,7 @@ const uploadToCloudinary = async (file) => {
   }
 };
 
-export const createSong = async (req, res, next) => {
+const createSong = async (req, res, next) => {
   try {
     if (!req.files || !req.files.audioFile || !req.files.imageFile) {
       return res.status(400).json({ message: "Please upload all files" });
@@ -39,7 +39,7 @@ export const createSong = async (req, res, next) => {
 
     await song.save();
 
-    // if song belongs to an album, update the album's songs array
+    // If song belongs to an album, update the album's songs array
     if (albumId) {
       await Album.findByIdAndUpdate(albumId, {
         $push: { songs: song._id },
@@ -52,13 +52,13 @@ export const createSong = async (req, res, next) => {
   }
 };
 
-export const deleteSong = async (req, res, next) => {
+const deleteSong = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const song = await Song.findById(id);
 
-    // if song belongs to an album, update the album's songs array
+    // If song belongs to an album, update the album's songs array
     if (song.albumId) {
       await Album.findByIdAndUpdate(song.albumId, {
         $pull: { songs: song._id },
@@ -74,7 +74,7 @@ export const deleteSong = async (req, res, next) => {
   }
 };
 
-export const createAlbum = async (req, res, next) => {
+const createAlbum = async (req, res, next) => {
   try {
     const { title, artist, releaseYear } = req.body;
     const { imageFile } = req.files;
@@ -97,7 +97,7 @@ export const createAlbum = async (req, res, next) => {
   }
 };
 
-export const deleteAlbum = async (req, res, next) => {
+const deleteAlbum = async (req, res, next) => {
   try {
     const { id } = req.params;
     await Song.deleteMany({ albumId: id });
@@ -109,6 +109,14 @@ export const deleteAlbum = async (req, res, next) => {
   }
 };
 
-export const checkAdmin = async (req, res, next) => {
+const checkAdmin = async (req, res, next) => {
   res.status(200).json({ admin: true });
+};
+
+module.exports = {
+  createSong,
+  deleteSong,
+  createAlbum,
+  deleteAlbum,
+  checkAdmin,
 };

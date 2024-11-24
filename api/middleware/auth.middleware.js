@@ -1,6 +1,6 @@
-import { clerkClient } from "@clerk/express";
+const { clerkClient } = require("@clerk/express");
 
-export const protectRoutes = async (req, res, next) => {
+const protectRoutes = async (req, res, next) => {
   if (!req.auth.userId) {
     return res.status(401).json({
       message: "Unauthorized - Please login first",
@@ -9,7 +9,7 @@ export const protectRoutes = async (req, res, next) => {
   next();
 };
 
-export const requireAdmin = async (req, res, next) => {
+const requireAdmin = async (req, res, next) => {
   try {
     const currentUser = await clerkClient.users.getUser(req.auth.userId);
     const isAdmin =
@@ -25,4 +25,9 @@ export const requireAdmin = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  protectRoutes,
+  requireAdmin,
 };

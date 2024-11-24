@@ -1,33 +1,31 @@
-import express from "express";
-import dotenv from "dotenv";
-import fileUpload from "express-fileupload";
-import { clerkMiddleware } from "@clerk/express";
-import { connectDB } from "./lib/db.js";
-import path from "path";
-import cors from "cors";
+const express = require("express");
+const dotenv = require("dotenv");
+const fileUpload = require("express-fileupload");
+const { clerkMiddleware } = require("@clerk/express");
+const { connectDB } = require("./lib/db.js");
+const path = require("path");
+const cors = require("cors");
+const fs = require("fs");
+const http = require("http");
+const cron = require("node-cron");
 
 // Routes
-import userRoutes from "./routes/user.routes.js";
-import authRoutes from "./routes/auth.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
-import songRoutes from "./routes/songs.routes.js";
-import albumRoutes from "./routes/album.routes.js";
-import statsRoutes from "./routes/stats.routes.js";
+const userRoutes = require("./routes/user.routes.js");
+const authRoutes = require("./routes/auth.routes.js");
+const adminRoutes = require("./routes/admin.routes.js");
+const songRoutes = require("./routes/songs.routes.js");
+const albumRoutes = require("./routes/album.routes.js");
+const statsRoutes = require("./routes/stats.routes.js");
 
 // Socket
-import { createServer } from "http";
-import { initializeSocket } from "./lib/socket.js";
-
-//cron
-import cron from "node-cron";
+const { initializeSocket } = require("./lib/socket.js");
 
 dotenv.config();
 
 const app = express();
-const __dirname = path.resolve();
 const PORT = process.env.PORT;
 
-const httpServer = createServer(app);
+const httpServer = http.createServer(app);
 
 // Initialize Socket.IO with httpServer
 initializeSocket(httpServer);
@@ -92,6 +90,5 @@ httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   connectDB();
 });
-
 
 module.exports = app;
